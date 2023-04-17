@@ -12,7 +12,9 @@ class Cookie():
         self.y = y
         self.speedX = speedX
         self.speedY = speedY
-        self.image = image_path
+        self.image = pygame.image.load(image_path)
+
+        self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
 
 def cookie_move(cookies):
         for cookie in cookies:
@@ -58,6 +60,7 @@ clock.tick(60)
 
 # Main game loop
 game_exit = False
+points = 0
 while not game_exit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -72,15 +75,18 @@ while not game_exit:
     # Spawn new cookies every 2 seconds
     if pygame.time.get_ticks() % 2000 < 60:
         cookies.append(spawn_cookie(cookie_image))
-        
+
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
-            if cookie_rect.collidepoint(mouse_pos):
-                points += 1  # increment points counter when cookie is clicked
+            for cookie in cookies:
+                if cookie.rect.collidepoint(mouse_pos):
+                    cookies.remove(cookie)
+                    points += 1
     
 
     # Limit the game to 60 frames per second
+    print(points)
     clock.tick(60)
 # while True:
 #     screen.fill((0, 0, 0))
