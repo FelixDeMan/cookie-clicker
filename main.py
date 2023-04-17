@@ -99,6 +99,8 @@ def spawn_cookie(cookie_img, bouncing = False):
     cookie = Cookie(cookie_x, cookie_y, speedX, speedY)
 
     if bouncing:
+        speedY = random.randint(-5, 5)
+        speedX = random.randint(-5, 5)
         cookie = Cookie(cookie_x, cookie_y, speedX, speedY, image_path="feelsbadman.jpg")
 
     return cookie
@@ -187,14 +189,5 @@ while not game_exit:
 #         cookies.append(spawn_cookie(cookie_image))
 
 #     clock.tick(60)
-
-
-
-
-
-
-
-
-
 
 
