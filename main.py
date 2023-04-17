@@ -20,10 +20,24 @@ class Cookie():
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
 
 def cookie_move(cookies):
-        for cookie in cookies:
-            cookie.x += fps * cookie.speedX
-            cookie.y += fps * cookie.speedY
-            screen.blit(cookie_image, (cookie.x, cookie.y))
+    for cookie in cookies:
+        if cookie.x < 0 or cookie.x > display_width:
+            print(len(cookies))
+            cookies.remove(cookie)
+
+            print("cookie off screen")
+            print(len(cookies))
+            continue
+        if cookie.y < 0 or cookie.y > display_height:
+            print(len(cookies))
+            cookies.remove(cookie)
+            print("cookie off screen")
+            print(len(cookies))
+            continue
+        cookie.x += fps * cookie.speedX
+        cookie.y += fps * cookie.speedY
+        screen.blit(cookie_image, (cookie.x, cookie.y))
+    return cookies
 
 
 def spawn_cookie(cookie_img):
@@ -68,10 +82,20 @@ while not game_exit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_exit = True
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            print(mouse_pos)
+            for cookie in cookies:
+                if cookie.rect.collidepoint(mouse_pos):
+                    cookies.remove(cookie)
+                    print("cookie {} removed".format(cookie))
+                    points += 1
+                    
 
     # Move and draw the cookies on the game display
     screen.fill((255, 255, 255))
-   
+
     cookie_move(cookies)
     pygame.display.update()
 
@@ -79,19 +103,13 @@ while not game_exit:
     if pygame.time.get_ticks() % 2000 < 60:
         cookies.append(spawn_cookie(cookie_image))
 
-    for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            for cookie in cookies:
-                if cookie.rect.collidepoint(mouse_pos):
-                    cookies.remove(cookie)
-                    points += 1
+        
     
 
     # Limit the game to 60 frames per second
-    print(points)
+    #print(points)
     clock.tick(60)
-# while True:
+        # while True:
 #     screen.fill((0, 0, 0))
 #     cookie_move(cookies)
 #     if pygame.time.get_ticks() % 2000 < 60:
