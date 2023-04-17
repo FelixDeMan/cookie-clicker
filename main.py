@@ -24,30 +24,18 @@ class Cookie():
             self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
 
 
-
 def cookie_move(cookies, bouncing = False):
     for cookie in cookies:
         if bouncing:    
             if cookie.x < 0:
-                cookie.speedX = abs(cookie.speedX)
-                cookie.update_cookie()
-                screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
-                
+                cookie.speedX = abs(cookie.speedX) 
             elif cookie.x + 20 > display_width:
-                cookie.speedX = -abs(cookie.speedX)
-                cookie.update_cookie()
-                screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
-                
-
+                cookie.speedX = -abs(cookie.speedX)       
             if cookie.y < 0:
-                cookie.speedY = abs(cookie.speedY)
-                cookie.update_cookie()
-                screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
-                
+                cookie.speedY = abs(cookie.speedY)         
             elif cookie.y + 20 > display_height:
                 cookie.speedY = -abs(cookie.speedY)
-                cookie.update_cookie()
-                screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
+                
             cookie.x += fps * cookie.speedX
             cookie.y += fps * cookie.speedY
             cookie.update_cookie()
