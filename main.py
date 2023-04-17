@@ -25,32 +25,81 @@ class Cookie():
 
 
 
-def cookie_move(cookies):
+def cookie_move(cookies, bouncing = False):
     for cookie in cookies:
-        if cookie.x < 0 or cookie.x > display_width:
-            print(len(cookies))
-            cookies.remove(cookie)
+        if bouncing:    
+            if cookie.x < 0:
+                cookie.speedX = abs(cookie.speedX)
+                cookie.update_cookie()
+                screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
+                
+            elif cookie.x + 20 > display_width:
+                cookie.speedX = -abs(cookie.speedX)
+                cookie.update_cookie()
+                screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
+                
 
-            print("cookie off screen")
-            print(len(cookies))
+            if cookie.y < 0:
+                cookie.speedY = abs(cookie.speedY)
+                cookie.update_cookie()
+                screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
+                
+            elif cookie.y + 20 > display_height:
+                cookie.speedY = -abs(cookie.speedY)
+                cookie.update_cookie()
+                screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
+            cookie.x += fps * cookie.speedX
+            cookie.y += fps * cookie.speedY
+            cookie.update_cookie()
+            screen.blit(bouncing_cookie_image, (cookie.x, cookie.y))
             continue
-        if cookie.y < 0 or cookie.y > display_height:
-            print(len(cookies))
-            cookies.remove(cookie)
-            print("cookie off screen")
-            print(len(cookies))
-            continue
+                
+        else:
+            if cookie.x < 0 or cookie.x > display_width:
+                #print(len(cookies))
+                cookies.remove(cookie)
+
+                print("cookie off screen")
+                #print(len(cookies))
+                continue
+            if cookie.y < 0 or cookie.y > display_height:
+                #print(len(cookies))
+                cookies.remove(cookie)
+                print("cookie off screen")
+                #print(len(cookies))
+                continue
         cookie.x += fps * cookie.speedX
         cookie.y += fps * cookie.speedY
         cookie.update_cookie()
         screen.blit(cookie_image, (cookie.x, cookie.y))
-        pygame.draw.rect(screen,(255,0,0), cookie.rect, 2)
+        #pygame.draw.rect(screen,(255,0,0), cookie.rect, 2)
     return cookies
 
 
+def bouncing_cookie_move(cookie):
+    if cookie.x < 0:
+        cookie.speedX = abs(cookie.speedX)
+    elif cookie.x + 25 > display_width:
+        cookie.speedX = -abs(cookie.speedX)
+
+    if cookie.y < 0:
+        cookie.speedY = abs(cookie.speedY)
+    elif cookie.y + 25 > display_height:
+        cookie.speedY = -abs(cookie.speedY)
+
+    cookie.x += fps * cookie.speedX
+    cookie.y += fps * cookie.speedY
+    cookie.update_cookie()
+    screen.blit(cookie_image, (cookie.x, cookie.y))
+    #pygame.draw.rect(screen, (255, 0, 0), cookie.rect, 2)
+    return cookie
 
 
-def spawn_cookie(cookie_img):
+
+
+
+
+def spawn_cookie(cookie_img, bouncing = False):
     odd = random.choice(['top', 'bottom'])
     if odd == 'top':
         cookie_x = random.randint(0, display_width - cookie_img.get_width())
@@ -65,6 +114,10 @@ def spawn_cookie(cookie_img):
     speedY = random.randint(-5, 5)
     speedX = random.randint(-5, 5)
     cookie = Cookie(cookie_x, cookie_y, speedX, speedY)
+
+    if bouncing:
+        cookie = Cookie(cookie_x, cookie_y, speedX, speedY, image_path="feelsbadman.jpg")
+
     return cookie
 
 
@@ -74,10 +127,18 @@ pygame.display.set_caption("Cookie Clicker")
 cookie_image = pygame.image.load("cookie.png")
 cookie_image = pygame.transform.scale(cookie_image, (50, 50))
 
+bouncing_cookie_image = pygame.image.load("feelsbadman.jpg")
+bouncing_cookie_image = pygame.transform.scale(bouncing_cookie_image, (50, 50))
+
 cookies = []
 cookie = Cookie()
 cookies.append(cookie)
 screen.blit(cookie_image, (cookie.x, cookie.y))
+
+bouncing_cookies = []
+bouncing_cookie = Cookie(image_path="feelsbadman.jpg")
+bouncing_cookies.append(bouncing_cookie)
+screen.blit(bouncing_cookie_image, (bouncing_cookie.x, bouncing_cookie.y))
 pygame.display.update()
 
 fps = 0.10
@@ -112,11 +173,16 @@ while not game_exit:
     screen.fill((255, 255, 255))
 
     cookie_move(cookies)
+    cookie_move(bouncing_cookies, bouncing=True)
     #pygame.display.update()
     screen.blit(text_surface, (10, 10))
     # Spawn new cookies every 2 seconds
     if pygame.time.get_ticks() % 2000 < 60:
         cookies.append(spawn_cookie(cookie_image))
+
+    if pygame.time.get_ticks() % 2000 < 60:
+        bouncing_cookies.append(spawn_cookie(bouncing_cookie_image, bouncing=True))
+    
 
         
     # Create a text surface with the current points counter
