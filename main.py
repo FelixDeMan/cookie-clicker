@@ -76,23 +76,6 @@ def cookie_move(cookies, bouncing = False):
     return cookies
 
 
-def bouncing_cookie_move(cookie):
-    if cookie.x < 0:
-        cookie.speedX = abs(cookie.speedX)
-    elif cookie.x + 25 > display_width:
-        cookie.speedX = -abs(cookie.speedX)
-
-    if cookie.y < 0:
-        cookie.speedY = abs(cookie.speedY)
-    elif cookie.y + 25 > display_height:
-        cookie.speedY = -abs(cookie.speedY)
-
-    cookie.x += fps * cookie.speedX
-    cookie.y += fps * cookie.speedY
-    cookie.update_cookie()
-    screen.blit(cookie_image, (cookie.x, cookie.y))
-    #pygame.draw.rect(screen, (255, 0, 0), cookie.rect, 2)
-    return cookie
 
 
 
@@ -180,7 +163,7 @@ while not game_exit:
     if pygame.time.get_ticks() % 2000 < 60:
         cookies.append(spawn_cookie(cookie_image))
 
-    if pygame.time.get_ticks() % 2000 < 60:
+    if pygame.time.get_ticks() % 5000 < 60:
         bouncing_cookies.append(spawn_cookie(bouncing_cookie_image, bouncing=True))
     
 
