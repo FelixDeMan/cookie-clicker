@@ -19,6 +19,9 @@ class Cookie():
 
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
 
+    def update_cookie(self):
+            self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
+
 def cookie_move(cookies):
     for cookie in cookies:
         if cookie.x < 0 or cookie.x > display_width:
@@ -36,7 +39,9 @@ def cookie_move(cookies):
             continue
         cookie.x += fps * cookie.speedX
         cookie.y += fps * cookie.speedY
+        cookie.update_cookie()
         screen.blit(cookie_image, (cookie.x, cookie.y))
+        pygame.draw.rect(screen,(255,0,0), cookie.rect, 2)
     return cookies
 
 
