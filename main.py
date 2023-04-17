@@ -12,7 +12,10 @@ class Cookie():
         self.y = y
         self.speedX = speedX
         self.speedY = speedY
+
+  
         self.image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(cookie_image, (50, 50))
 
         self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
 
@@ -37,7 +40,7 @@ def spawn_cookie(cookie_img):
 
     speedY = random.randint(-5, 5)
     speedX = random.randint(-5, 5)
-    cookie = Cookie(cookie_x, cookie_y, speedX, speedY, cookie_img)
+    cookie = Cookie(cookie_x, cookie_y, speedX, speedY)
     return cookie
 
 screen = pygame.display.set_mode((display_width, display_height))
