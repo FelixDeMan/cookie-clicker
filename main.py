@@ -6,6 +6,7 @@ pygame.init()
 display_width = 800
 display_height = 600
 
+
 class Cookie():
     def __init__(self, x = 0, y = 0, speedX = 1, speedY = 1,  image_path= 'cookie.png'):
         self.x = x
@@ -21,6 +22,8 @@ class Cookie():
 
     def update_cookie(self):
             self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
+
+
 
 def cookie_move(cookies):
     for cookie in cookies:
@@ -45,6 +48,8 @@ def cookie_move(cookies):
     return cookies
 
 
+
+
 def spawn_cookie(cookie_img):
     odd = random.choice(['top', 'bottom'])
     if odd == 'top':
@@ -61,6 +66,7 @@ def spawn_cookie(cookie_img):
     speedX = random.randint(-5, 5)
     cookie = Cookie(cookie_x, cookie_y, speedX, speedY)
     return cookie
+
 
 screen = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption("Cookie Clicker")
@@ -80,6 +86,8 @@ clock = pygame.time.Clock()
 # Limit the game to 60 frames per second
 clock.tick(60)
 
+font = pygame.font.Font(None, 36)
+text_surface = font.render(f"Points: {0}", True, (55, 55, 55))
 # Main game loop
 game_exit = False
 points = 0
@@ -96,20 +104,29 @@ while not game_exit:
                     cookies.remove(cookie)
                     print("cookie {} removed".format(cookie))
                     points += 1
+                    text_surface = font.render(f"Points: {points}", True, (55, 55, 55))
+                    
                     
 
     # Move and draw the cookies on the game display
     screen.fill((255, 255, 255))
 
     cookie_move(cookies)
-    pygame.display.update()
-
+    #pygame.display.update()
+    screen.blit(text_surface, (10, 10))
     # Spawn new cookies every 2 seconds
     if pygame.time.get_ticks() % 2000 < 60:
         cookies.append(spawn_cookie(cookie_image))
 
         
+    # Create a text surface with the current points counter
     
+    #text_surface = font.render(f"Points: {points}", True, (55, 55, 55))
+    
+    # Draw the text surface onto the screen
+    #screen.blit(text_surface, (10, 10))
+    
+    pygame.display.update()
 
     # Limit the game to 60 frames per second
     #print(points)
