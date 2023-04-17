@@ -195,30 +195,6 @@ while not game_exit:
 
 
 
-#     pygame.display.update()
-
-
-
-points = 0  # initialize points counter to zero
-
-while True:  # game loop
-    for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            if cookie_rect.collidepoint(mouse_pos):
-                points += 1  # increment points counter when cookie is clicked
-    
-    # Draw code here...
-
-    # Create a text surface with the current points counter
-    font = pygame.font.Font(None, 36)
-    text_surface = font.render(f"Points: {points}", True, (255, 255, 255))
-    
-    # Draw the text surface onto the screen
-    screen.blit(text_surface, (10, 10))
-    
-    pygame.display.update()
-
 
 
 
