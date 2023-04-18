@@ -6,6 +6,23 @@ pygame.init()
 
 display_width = 800
 display_height = 600
+class Animation():
+    def __init__(self, x, y, image_path = 'explosion/'):
+        self.x = x
+        self.y = y
+        self.image_paths = image_path
+        self.images = [pygame.image.load("{}exp{}.png".format(image_path, i)) for i in range(len(os.listdir(self.image_paths)))]
+        self.current_frame = len(self.images)
+        self.length = len(self.images)
+        
+        self.update()
+
+    def update(self):
+        print(self.length - self.current_frame)
+        print(self.current_frame)
+        self.image = self.images[self.length - self.current_frame]
+        self.current_frame -= 1
+
 
 class Cookie():
     def __init__(self, x = 0, y = 0, speedX = 1, speedY = 1,   image_path= 'cookie.png'):
@@ -30,7 +47,7 @@ class GoldenCookie(Cookie):
     def __init__(self, x = 0, y = 0, speedX = 1, speedY = 1,   image_path= 'Golden_cookie.png'):
         speedX *= 5
         speedY *= 5
-        print(image_path)
+        
         super().__init__(x, y, speedX, speedY, image_path)
         self.points = 5
         #self.image = pygame.image.load(image_path)
@@ -42,17 +59,17 @@ class GoldenCookie(Cookie):
 def cookie_move(cookies):
     for cookie in cookies:
         if cookie.x < 0 or cookie.x > display_width:
-            print(len(cookies))
+            #print(len(cookies))
             cookies.remove(cookie)
 
             print("cookie off screen")
-            print(len(cookies))
+            #print(len(cookies))
             continue
         if cookie.y < 0 or cookie.y > display_height:
-            print(len(cookies))
+           # print(len(cookies))
             cookies.remove(cookie)
             print("cookie off screen")
-            print(len(cookies))
+            #print(len(cookies))
             continue
         cookie.x += fps * cookie.speedX
         cookie.y += fps * cookie.speedY
@@ -61,6 +78,17 @@ def cookie_move(cookies):
         pygame.draw.rect(screen,(255,0,0), cookie.rect, 2)
     return cookies
 
+
+def animation_move(animations):
+    for animation in animations:
+        if animation.current_frame == 0:
+            animations.remove(animation)
+            continue
+     
+
+        animation.update()
+        screen.blit(animation.image, (animation.x, animation.y))
+    return animations
 
 def spawn_cookie(cookie_img, speed_scale = 1, type = Cookie, bouncing = False):
     odd = random.choice(['top', 'bottom'])
@@ -109,7 +137,7 @@ text_surface = font.render(f"Points: {points}", True, (255, 255, 255))
 screen.blit(text_surface, (10, 10))
 # Main game loop
 game_exit = False
-
+explosions = []
 while not game_exit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -117,18 +145,21 @@ while not game_exit:
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
-            print(mouse_pos)
+            #print(mouse_pos)
             for cookie in cookies:
                 if cookie.rect.collidepoint(mouse_pos):
+                    points += cookie.points
+                    explosions.append(Animation(cookie.x, cookie.y))
                     cookies.remove(cookie)
                     print("cookie {} removed".format(cookie))
-                    points += cookie.points
+                    
                     
 
     # Move and draw the cookies on the game display
     screen.fill((255, 255, 255))
 
     cookie_move(cookies)
+    animation_move(explosions)
     
 
     # Spawn new cookies every 2 seconds
