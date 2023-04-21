@@ -42,7 +42,13 @@ class Cookie():
     def update_cookie(self):
             self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
 
+class Bomb(Cookie):
+    def __init__(self, x = 0, y = 0, speedX = 1, speedY = 1,   image_path= 'bomb.png'):
+        super().__init__(x, y, speedX, speedY, image_path)
+        self.points = 'GAME OVER'
 
+        def update_cookie(self):
+            self.rect = pygame.Rect(self.x, self.y, self.image.get_width(),self.image.get_height())
 class GoldenCookie(Cookie):
     def __init__(self, x = 0, y = 0, speedX = 1, speedY = 1,   image_path= 'Golden_cookie.png'):
         speedX *= 5
@@ -120,6 +126,9 @@ cookie_image = pygame.transform.scale(cookie_image, (50, 50))
 golden_cookie_image = pygame.image.load("Golden_cookie.png")
 golden_cookie_image = pygame.transform.scale(golden_cookie_image, (50, 50))
 
+bomb_cookie_image = pygame.image.load('bomb.png')
+bomb_cookie_image = pygame.transform.scale(bomb_cookie_image, (50, 50))
+
 cookies = []
 cookie = Cookie()
 cookies.append(cookie)
@@ -148,6 +157,8 @@ while not game_exit:
             #print(mouse_pos)
             for cookie in cookies:
                 if cookie.rect.collidepoint(mouse_pos):
+                    if cookie.points == 'GAME OVER':
+                        game_exit = True
                     points += cookie.points
                     explosions.append(Animation(cookie.x, cookie.y))
                     cookies.remove(cookie)
@@ -176,7 +187,9 @@ while not game_exit:
         print("golden cookie spawned")
     
 
-        
+    if pygame.time.get_ticks() % 4000 < 60:  
+        cookies.append(spawn_cookie(cookie_img = bomb_cookie_image, speed_scale=speed_scale, type=Bomb))
+        print("bomb cookie spawned")
     # Create a text surface with the current points counter
     
     text_surface = font.render(f"Points: {points}", True, (55, 55, 55))
