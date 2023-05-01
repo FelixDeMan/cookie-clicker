@@ -84,6 +84,17 @@ def cookie_move(cookies):
         pygame.draw.rect(screen,(255,0,0), cookie.rect, 2)
     return cookies
 
+def render_text(points, lives, display_width):
+    text_surface = font.render(f"Points: {points}", True, (55, 55, 55))
+    #Draw the text surface onto the screen
+    screen.blit(text_surface, (10, 10))
+    
+
+    lives_surface = font.render(f"Lives: {lives}", True,  (55, 55, 55))
+    #Draw the text surface onto the screen
+    screen.blit(lives_surface, (display_width - 100, 10))
+    
+
 
 def animation_move(animations):
     for animation in animations:
@@ -134,6 +145,7 @@ cookie = Cookie()
 cookies.append(cookie)
 screen.blit(cookie_image, (cookie.x, cookie.y))
 pygame.display.update()
+lives = 3
 speed_scale = 1
 fps = 0.10
 
@@ -158,11 +170,15 @@ while not game_exit:
             for cookie in cookies:
                 if cookie.rect.collidepoint(mouse_pos):
                     if cookie.points == 'GAME OVER':
-                        game_exit = True
-                    points += cookie.points
-                    explosions.append(Animation(cookie.x, cookie.y))
-                    cookies.remove(cookie)
-                    print("cookie {} removed".format(cookie))
+                        cookies.remove(cookie)
+                        lives = lives - 1
+                        if lives == 0:
+                            game_exit = True
+                    else:
+                        points += cookie.points
+                        explosions.append(Animation(cookie.x, cookie.y))
+                        cookies.remove(cookie)
+                        print("cookie {} removed".format(cookie))
                     
                     
 
@@ -191,11 +207,8 @@ while not game_exit:
         cookies.append(spawn_cookie(cookie_img = bomb_cookie_image, speed_scale=speed_scale, type=Bomb))
         print("bomb cookie spawned")
     # Create a text surface with the current points counter
+    render_text(points, lives, display_width)
     
-    text_surface = font.render(f"Points: {points}", True, (55, 55, 55))
-    
-    # Draw the text surface onto the screen
-    screen.blit(text_surface, (10, 10))
     
     pygame.display.update()
 
